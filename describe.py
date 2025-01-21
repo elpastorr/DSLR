@@ -25,11 +25,13 @@ def get_stats(data):
     std = (tmp / count) ** 0.5
 
     values.sort()
+    minv = values[0]
+    maxv = values[len(values) - 1]
     q1 = values[int(0.25 * count)]
     median = values[int(0.5 * count)]
     q3 = values[int(0.75 * count)]
 
-    return (count, mean, std, min(values), q1, median, q3, max(values))
+    return (count, mean, std, minv, q1, median, q3, maxv)
 
 
 def describe(data):

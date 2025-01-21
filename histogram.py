@@ -45,9 +45,28 @@ def find_homogeneous_distrib(data):
         total_var = sum(data_vars) / len(data_vars)
         if total_var < min_var:
             min_var = total_var
-            homo_distrib = course
+            homo_distrib = cours
 
     return homo_distrib
+
+
+def plot_histogram(data, course):
+    colors = {
+        'Gryffindor': 'red',
+        'Hufflepuff': 'yellow',
+        'Ravenclaw': 'blue',
+        'Slytherin': 'green'
+    }
+    plt.figure(figsize=(10, 6))
+    for house in data['Hogwarts House'].unique():
+        subset = data[data['Hogwarts House'] == house]
+        plt.hist(subset[course].dropna(), bins=30, alpha=0.4, label=house, color=colors[house])
+
+    plt.title(f'Histogram of {course} by Hogwarts House')
+    plt.xlabel(course)
+    plt.ylabel('Frequency')
+    plt.legend(loc='upper right')
+    plt.show()
 
 
 def main():
@@ -59,7 +78,7 @@ def main():
         homogeneous_distrib = find_homogeneous_distrib(data)
         if homogeneous_distrib:
             print(f"The course with the more homogeneous score distribution between all four houses is : {homogeneous_distrib}")
-            # plot_histogram(data, homogeneous_distrib)
+            plot_histogram(data, homogeneous_distrib)
         else:
             print("No homogeneous score distribution found")
 
