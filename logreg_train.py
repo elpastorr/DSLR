@@ -16,20 +16,20 @@ def load_data(filename):
         return None
 
 
-def get_mean(column):
-    values = []
-    for value in column:
-        if pd.notnull(value):
-            values.append(value)
-    return sum(values) / len(values)
+def get_mean(values, j):
+    tmp = []
+    for i in range(values.shape[0]):
+        for k in range(values.shape[1]):
+            if pd.notnull(values[i, k]) and k == j:
+                tmp.append(values[i, k])
+    return sum(tmp) / len(tmp)
 
 
 def get_rid_of_nan(values):
     for i in range(values.shape[0]):
-        mean = get_mean(values[i])
         for j in range(values.shape[1]):
             if pd.isnull(values[i, j]):
-                values[i, j] = mean
+                values[i, j] = get_mean(values, j)
     return values
 
 
@@ -37,17 +37,28 @@ def get_min_max(values):
     minv = []
     maxv = []
 
+    for i in range(values.shape[0]):
+        for j in range(values.shape[1]):
+            if i == 0:
+                minv.append(values[i, j])
+                maxv.append(values[i, j])
+            else:
+                if values[i, j] < minv[j]:
+                    minv[j] = values[i, j]
+                if values[i, j] > maxv[j]:
+                    maxv[j] = values[i, j]
+            # print("i=", i, "j=", j, "value=", values[i, j])
+            # print("min:", minv)
+            # print("max:", maxv)
+    return minv, maxv
 
-    # for i in range(values.shape[1]):
-    #     for vals in values[:i]:
-    #         minv.append(values[:i])
-    #         print("minv=", minv)
 
-    #         # for val in vals:
-    #             # if minv[i]
-    #                 # print("va:", val)
-    # return 0, 0
-
+def normalize_values(values, minv, maxv):
+    norm_values = np.zeros(values.shape)
+    for i in range(values.shape[0]):
+        for j in range(values.shape[1]):
+            norm_values[i, j] = (values[i, j] - minv[j]) / (maxv[j] - minv[j])
+    return norm_values
 
 
 def normalize_data(data):
@@ -56,17 +67,22 @@ def normalize_data(data):
     values = get_rid_of_nan(values)
     minv, maxv = get_min_max(values)
 
-    # norm_values = (values - minv) / (maxv - minv)
+    norm_values = normalize_values(values, minv, maxv)
 
-    # return norm_values
+    return norm_values
+
+
+def train(data, houses):
+    for house in houses:
+        
+
 
 
 def main():
     data = load_data("datasets/little_dataset_train.csv")
     if data is not None:
         norm_data = normalize_data(data)
-        print(norm_data)
-
+    weights = train(norm_data, list(data['Hogwarts House'].unique()))
 
 if __name__ == "__main__":
     main()
