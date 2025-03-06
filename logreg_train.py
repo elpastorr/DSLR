@@ -72,17 +72,66 @@ def normalize_data(data):
     return norm_values
 
 
-def train(data, houses):
+# matrice.T = matrice inverse
+# matrice1 @ matrice2 = produit matriciel
+
+
+# regression logistique = classification binaire (sortie = 0 ou 1)
+# sigmoid permet de classer entre 0 et 1
+
+def gradient_descent(data, binary, weights):
+    epochs = 500
+    learning_rate = 0.001
+    m = len(binary)
+    lambda_reg = 0.0001
+
+    for epoch in range(epochs):
+        # shuffle des donnés
+        permutation = np.random.permutation(m)
+        shuffled_data = data[permutation]
+        shuffled_binary = binary[permutation]
+
+        # calcul des predictions
+        tmp = np.dot(shuffled_data, weights[1:]) + weights[0]
+        predictions = sigmoid(tmp)
+
+        # calcul du gradient
+        gradient = np.zeros(len(weights))
+        gradient[0] = (1 / m) * np.sum(predictions - shuffled_binary).item()# ???
+        gradient[1:] = (1 / m) * shuffled_data.T @ (predictions - shuffled_binary)
+
+        # regularisation L2 ???
+        gradient[1:] += (lambda_reg / m) * weights[1:]# ???
+
+        # weights MAJ
+        weights -= learning_rate * gradient
+
+        # calcul du cout
+        tmp = np.dot(data, weights[1:]) + weights[0]
+        predictions = sigmoid(tmp)                                                                      # ???
+        cost = (-1 / m) * np.sum(binary * np.log(predictions) + (1 - binary) * np.log(1 - predictions)) + (lambda_reg / (2 * m)) * np.sum(weights[1:] ** 2)
+    return weights
+
+
+def train(data, houses, data_houses):
+    all_weights = {}
+
     for house in houses:
+        binary = (data_houses == house).astype(int)
+        weights = np.random.randn(data.shape[1] + 1) * 0.01
+        weights = gradient_descent(data, binary, weights)
+
+        all_weights[house] = weights
+
+    return  all_weights
         
-
-
 
 def main():
     data = load_data("datasets/little_dataset_train.csv")
     if data is not None:
         norm_data = normalize_data(data)
-    weights = train(norm_data, list(data['Hogwarts House'].unique()))
+    weights = train(norm_data, list(data['Hogwarts House'].unique()), data['Hogwarts House'].values)
+    # print(weights)
 
 if __name__ == "__main__":
     main()
