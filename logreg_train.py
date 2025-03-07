@@ -47,9 +47,6 @@ def get_min_max(values):
                     minv[j] = values[i, j]
                 if values[i, j] > maxv[j]:
                     maxv[j] = values[i, j]
-            # print("i=", i, "j=", j, "value=", values[i, j])
-            # print("min:", minv)
-            # print("max:", maxv)
     return minv, maxv
 
 
@@ -84,6 +81,8 @@ def gradient_descent(data, binary, weights):
     learning_rate = 0.001
     m = len(binary)
     lambda_reg = 0.0001
+
+    print("w =", weights)
 
     for epoch in range(epochs):
         # shuffle des donnés
@@ -120,18 +119,24 @@ def train(data, houses, data_houses):
         binary = (data_houses == house).astype(int)
         weights = np.random.randn(data.shape[1] + 1) * 0.01
         weights = gradient_descent(data, binary, weights)
-
         all_weights[house] = weights
-
     return  all_weights
-        
+
+
+def save_weights(weights):
+    with open("weights.txt", "w") as f:
+        for house, weight in weights.items():
+            f.write(f"{house}:{','.join(map(str, weight))}\n")
+
 
 def main():
     data = load_data("datasets/little_dataset_train.csv")
-    if data is not None:
-        norm_data = normalize_data(data)
+    if data is None:
+        print("Error: could not load data")
+        return    
+    norm_data = normalize_data(data)
     weights = train(norm_data, list(data['Hogwarts House'].unique()), data['Hogwarts House'].values)
-    # print(weights)
+    save_weights(weights)
 
 if __name__ == "__main__":
     main()
