@@ -20,7 +20,7 @@ def pair_plot(data):
 
     # Replace NAs with mean 
     # data.fillna(0, inplace=True)
-    print(data["Hogwarts House"].dtype)
+    # print(data["Hogwarts House"].dtype)
 
     # convert some column into integer for representation in scatter matrix
     data["Hogwarts House"] = data["Hogwarts House"].convert_dtypes()
@@ -44,7 +44,7 @@ def pair_plot(data):
 
     # plot scatter matrix using seaborn 
     # sns.set_theme(style="ticks")
-    sns.pairplot(data, hue="Hogwarts House", height=1.0)
+    sns.pairplot(data, hue="Hogwarts House", palette= colors, height=1.0)
     plt.show()
 
 def main():

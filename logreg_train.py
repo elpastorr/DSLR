@@ -69,20 +69,10 @@ def normalize_data(data):
     return norm_values
 
 
-# matrice.T = matrice inverse
-# matrice1 @ matrice2 = produit matriciel
-
-
-# regression logistique = classification binaire (sortie = 0 ou 1)
-# sigmoid permet de classer entre 0 et 1
-
 def gradient_descent(data, binary, weights):
     epochs = 500
-    learning_rate = 0.001
+    learning_rate = 0.1
     m = len(binary)
-    lambda_reg = 0.0001
-
-    print("w =", weights)
 
     for epoch in range(epochs):
         # shuffle des donnés
@@ -96,19 +86,17 @@ def gradient_descent(data, binary, weights):
 
         # calcul du gradient
         gradient = np.zeros(len(weights))
-        gradient[0] = (1 / m) * np.sum(predictions - shuffled_binary).item()# ???
+        gradient[0] = (1 / m) * np.sum(predictions - shuffled_binary).item()
         gradient[1:] = (1 / m) * shuffled_data.T @ (predictions - shuffled_binary)
-
-        # regularisation L2 ???
-        gradient[1:] += (lambda_reg / m) * weights[1:]# ???
 
         # weights MAJ
         weights -= learning_rate * gradient
 
         # calcul du cout
         tmp = np.dot(data, weights[1:]) + weights[0]
-        predictions = sigmoid(tmp)                                                                      # ???
-        cost = (-1 / m) * np.sum(binary * np.log(predictions) + (1 - binary) * np.log(1 - predictions)) + (lambda_reg / (2 * m)) * np.sum(weights[1:] ** 2)
+        predictions = sigmoid(tmp)
+        cost = (-1 / m) * np.sum(binary * np.log(predictions) + (1 - binary) * np.log(1 - predictions))
+
     return weights
 
 
@@ -130,13 +118,15 @@ def save_weights(weights):
 
 
 def main():
-    data = load_data("datasets/little_dataset_train.csv")
+    data = load_data("datasets/dataset_train.csv")
     if data is None:
         print("Error: could not load data")
         return    
     norm_data = normalize_data(data)
     weights = train(norm_data, list(data['Hogwarts House'].unique()), data['Hogwarts House'].values)
     save_weights(weights)
+    print("Weights saved in weights.txt")
+
 
 if __name__ == "__main__":
     main()

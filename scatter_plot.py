@@ -46,8 +46,9 @@ def main():
     data.drop(["Index", "First Name", "Last Name", "Birthday"], axis=1, inplace=True)
 
     compare_columns(data, 'Arithmancy', 'Astronomy')
-    # compare_columns(data, 'Flying', 'Transfiguration')
+    compare_columns(data, 'Astronomy', 'Defense Against the Dark Arts')
     # compare_columns(data, 'Charms', 'Care of Magical Creatures')
+
 
 if __name__ == "__main__":
     main()
