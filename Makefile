@@ -39,10 +39,10 @@ install:
 	sh install/install.sh
 
 clean:
-	dune clean
+	rm -f *.txt
+	rm -f *.csv
 
 fclean: clean
-	rm -f $(NAME)
 
 re: fclean all
 

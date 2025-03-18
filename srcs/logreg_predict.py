@@ -37,13 +37,22 @@ def load_data(filename):
 
 
 def process_data(raw_data):
-    classes = [ 'Astronomy', 'Herbology', 'Defense Against the Dark Arts',
-                'Divination', 'Muggle Studies', 'Ancient Runes', 'History of Magic',
-                'Transfiguration', 'Potions', 'Charms', 'Flying']
+    classes = [
+        "Astronomy",
+        "Herbology",
+        "Defense Against the Dark Arts",
+        "Divination",
+        "Muggle Studies",
+        "Ancient Runes",
+        "History of Magic",
+        "Transfiguration",
+        "Potions",
+        "Charms",
+        "Flying",
+    ]
 
     data = raw_data[classes].values
     data = get_rid_of_nan(data)
-
 
     data = StandardScaler().fit_transform(data)
     return data
@@ -52,9 +61,9 @@ def process_data(raw_data):
 def load_weights(filename):
     weights = {}
     try:
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             for line in file:
-                house, values = line.strip().split(':')
+                house, values = line.strip().split(":")
                 splited_values = np.array([float(x) for x in values.split(",")])
                 weights[house] = splited_values
     except FileNotFoundError:
@@ -73,7 +82,7 @@ def predict(train_data, weights, houses):
 
     for data in train_data:
         scores = []
-        
+
         for house, values in weights.items():
             score = np.dot(data, values[1:]) + values[0]
             scores.append(score)
@@ -87,14 +96,14 @@ def predict(train_data, weights, houses):
 
 
 def save_predictions(predictions, filename):
-    result = pd.read_csv(filename)[['Index']]
-    result['Hogwarts House'] = predictions
-    result.to_csv('houses.csv', index=False)
+    result = pd.read_csv(filename)[["Index"]]
+    result["Hogwarts House"] = predictions
+    result.to_csv("houses.csv", index=False)
     print("Predictions saved in houses.csv")
 
 
 def main():
-    filename = 'datasets/dataset_test.csv'
+    filename = "datasets/dataset_test.csv"
 
     checkfile(filename)
     raw_data = load_data(filename)
@@ -103,13 +112,14 @@ def main():
         return
     train_data = process_data(raw_data)
 
-    weights = load_weights('weights.txt')
+    weights = load_weights("weights.txt")
 
     houses = list(weights.keys())
 
     predictions = predict(train_data, weights, houses)
 
     save_predictions(predictions, filename)
+
 
 if __name__ == "__main__":
     main()

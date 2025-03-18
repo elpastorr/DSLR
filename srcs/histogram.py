@@ -1,6 +1,8 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+from pandas import DataFrame
+
 
 def load_data(filename):
     try:
@@ -34,13 +36,24 @@ def get_vars(group_data):
 
 
 def find_homogeneous_distrib(data):
-    houses = data['Hogwarts House'].unique()
-    courses = [column for column in data.columns if column not in ['Index', 'Hogwarts House', 'First Name', 'Last Name', 'Birthday', 'Best Hand']]
+    courses = [
+        column
+        for column in data.columns
+        if column
+        not in [
+            "Index",
+            "Hogwarts House",
+            "First Name",
+            "Last Name",
+            "Birthday",
+            "Best Hand",
+        ]
+    ]
     homo_distrib = None
-    min_var = float('inf')
+    min_var = float("inf")
 
     for course in courses:
-        group_data = data.groupby('Hogwarts House')[course].apply(list)
+        group_data = data.groupby("Hogwarts House")[course].apply(list)
         data_vars = get_vars(group_data)
         total_var = sum(data_vars) / len(data_vars)
         if total_var < min_var:
@@ -50,35 +63,47 @@ def find_homogeneous_distrib(data):
     return homo_distrib
 
 
-def plot_histogram(data, course):
+def plot_histogram(data: DataFrame, course: str):
     colors = {
-        'Gryffindor': 'red',
-        'Hufflepuff': 'yellow',
-        'Ravenclaw': 'blue',
-        'Slytherin': 'green'
+        "Gryffindor": "red",
+        "Hufflepuff": "gold",
+        "Ravenclaw": "blue",
+        "Slytherin": "green",
     }
     plt.figure(figsize=(10, 6))
-    for house in data['Hogwarts House'].unique():
-        subset = data[data['Hogwarts House'] == house]
+    for house in data["Hogwarts House"].unique():
+        subset = data[data["Hogwarts House"] == house]
+        fraction = int(subset[course].size / 10)
+        plt.hist(
+            subset[course].dropna(),
+            histtype="step",
+            bins=fraction,
+            label=house,
+            color=colors[house],
+        )
 
-        plt.hist(subset[course].dropna(), bins=30, alpha=0.1, label=house, color=colors[house])
-
-    plt.title(f'Histogram of {course} by Hogwarts House')
-    plt.xlabel(course)
-    plt.ylabel('Frequency')
-    plt.legend(loc='upper right')
+    plt.title(f"Histogram of {course} by Hogwarts House")
+    plt.xlabel(course + " Grades")
+    plt.ylabel("Percentage")
+    plt.legend(loc="upper right")
     plt.show()
 
 
 def main():
     if len(sys.argv) != 2:
-        print("Error: wrong arg number\nUsage: python3 histogram.py datasets/dataset_train.csv")
+        print(
+            "Error: wrong arg number\nUsage: python3 histogram.py datasets/dataset_train.csv"
+        )
         return
     data = load_data(sys.argv[1])
     if data is not None:
         homogeneous_distrib = find_homogeneous_distrib(data)
         if homogeneous_distrib:
-            print(f"The course with the more homogeneous score distribution between all four houses is : {homogeneous_distrib}")
+            print(
+                f"The course with the more homogeneous score distribution between all four houses is : {homogeneous_distrib}"
+            )
+            plot_histogram(data, "Potions")
+            plot_histogram(data, "Charms")
             plot_histogram(data, homogeneous_distrib)
         else:
             print("No homogeneous score distribution found")

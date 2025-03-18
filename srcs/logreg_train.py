@@ -59,7 +59,21 @@ def normalize_values(values, minv, maxv):
 
 
 def normalize_data(data):
-    courses = [column for column in data.columns if column not in ['Index', 'Hogwarts House', 'First Name', 'Last Name', 'Birthday', 'Best Hand', 'Arithmancy', 'Care of Magical Creatures']]
+    courses = [
+        column
+        for column in data.columns
+        if column
+        not in [
+            "Index",
+            "Hogwarts House",
+            "First Name",
+            "Last Name",
+            "Birthday",
+            "Best Hand",
+            "Arithmancy",
+            "Care of Magical Creatures",
+        ]
+    ]
     values = data[courses].values
     values = get_rid_of_nan(values)
     minv, maxv = get_min_max(values)
@@ -95,7 +109,9 @@ def gradient_descent(data, binary, weights):
         # calcul du cout
         tmp = np.dot(data, weights[1:]) + weights[0]
         predictions = sigmoid(tmp)
-        cost = (-1 / m) * np.sum(binary * np.log(predictions) + (1 - binary) * np.log(1 - predictions))
+        cost = (-1 / m) * np.sum(
+            binary * np.log(predictions) + (1 - binary) * np.log(1 - predictions)
+        )
 
     return weights
 
@@ -108,7 +124,7 @@ def train(data, houses, data_houses):
         weights = np.random.randn(data.shape[1] + 1) * 0.01
         weights = gradient_descent(data, binary, weights)
         all_weights[house] = weights
-    return  all_weights
+    return all_weights
 
 
 def save_weights(weights):
@@ -121,9 +137,11 @@ def main():
     data = load_data("datasets/dataset_train.csv")
     if data is None:
         print("Error: could not load data")
-        return    
+        return
     norm_data = normalize_data(data)
-    weights = train(norm_data, list(data['Hogwarts House'].unique()), data['Hogwarts House'].values)
+    weights = train(
+        norm_data, list(data["Hogwarts House"].unique()), data["Hogwarts House"].values
+    )
     save_weights(weights)
     print("Weights saved in weights.txt")
 

@@ -1,6 +1,7 @@
 import sys
 
-def compaire_data(our_file, correct_file):
+
+def compare_data(our_file, correct_file):
     try:
         our_data = open(our_file, "r")
         correct_data = open(correct_file, "r")
@@ -17,15 +18,17 @@ def compaire_data(our_file, correct_file):
     our_data.close()
     correct_data.close()
 
+
 def main(sys_argv):
     if len(sys_argv) != 3:
         print("Error: wrong arg number\nUsage: python3 main.py our_data correct_data ")
         return
     try:
-        diff = compaire_data(sys_argv[1], sys_argv[2])
+        compare_data(sys_argv[1], sys_argv[2])
     except Exception as e:
         print(e)
         return
+
 
 if __name__ == "__main__":
     sys_argv = sys.argv
