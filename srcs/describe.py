@@ -1,7 +1,5 @@
 import pandas as pd
 import sys
-import matplotlib.pyplot as plt
-
 
 RED = '\033[31m'
 BLUE = '\033[34m'
@@ -62,6 +60,7 @@ def describe(data):
         else:
             print(f"{BLUE}{column:<20}{RED} {stats}")
 
+
 def main():
     if len(sys.argv) != 2:
         print("Error: wrong arg number\nUsage: python3 describe.py datasets/dataset_train.csv")
@@ -74,6 +73,7 @@ def main():
         return
     
     describe(data)
+
 
 if __name__ == "__main__":
     main()

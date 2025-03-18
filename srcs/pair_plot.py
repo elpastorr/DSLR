@@ -54,7 +54,7 @@ def main():
 
     try:
         data = pd.read_csv(sys.argv[1])
-        data.head() 
+        data.head()
     except Exception as e:
         print(e)
         return

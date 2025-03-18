@@ -45,7 +45,7 @@ def find_homogeneous_distrib(data):
         total_var = sum(data_vars) / len(data_vars)
         if total_var < min_var:
             min_var = total_var
-            homo_distrib = cours
+            homo_distrib = course
 
     return homo_distrib
 
