@@ -60,7 +60,8 @@ def plot_histogram(data, course):
     plt.figure(figsize=(10, 6))
     for house in data['Hogwarts House'].unique():
         subset = data[data['Hogwarts House'] == house]
-        plt.hist(subset[course].dropna(), bins=30, alpha=0.4, label=house, color=colors[house])
+
+        plt.hist(subset[course].dropna(), bins=30, alpha=0.1, label=house, color=colors[house])
 
     plt.title(f'Histogram of {course} by Hogwarts House')
     plt.xlabel(course)
